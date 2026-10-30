@@ -149,8 +149,8 @@ function fetchMenus() {
 // console.log(response.json());
 // response.json(); response가 응답 객체.. 이 객체를 json으로 바꿔라..
 // 다 바꿔야지 menus에 저장을 하겠죠. 그래서 response.json();을 할동안  await
-menus = await response.json();
-console.log('메뉴 데이터 로드 완료:', menus);
+//menus = await response.json();
+//console.log('메뉴 데이터 로드 완료:', menus);
 //     } catch (error) {
 //         console.error('데이터를 가져오는 중 오류가 발생했습니다:', error);
 //     }
