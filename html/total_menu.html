@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>점심 메뉴 정보 관리 - 음식검색 게시판</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family:
+          "Segoe UI",
+          -apple-system,
+          BlinkMacSystemFont,
+          "Apple SD Gothic Neo",
+          sans-serif;
+        background-color: #f8fafc;
+        color: #334155;
+        line-height: 1.6;
+      }
+      /* 네비게이션 바 */
+      header {
+        background-color: #4a90e2;
+        color: white;
+        padding: 18px 40px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        box-shadow: 0 4px 12px rgba(74, 144, 226, 0.15);
+      }
+      header h1 {
+        font-size: 22px;
+        font-weight: 700;
+        letter-spacing: -0.5px;
+      }
+      nav a {
+        color: rgba(255, 255, 255, 0.9);
+        text-decoration: none;
+        margin-left: 24px;
+        font-weight: 600;
+        font-size: 15px;
+        transition: color 0.2s ease;
+      }
+      nav a:hover {
+        color: #ffffff;
+      }
+
+      /* 메인 컨테이너 */
+      .container {
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 0 20px;
+      }
+      .page-title {
+        font-size: 24px;
+        color: #1e293b;
+        margin-bottom: 20px;
+        font-weight: 700;
+      }
+
+      /* 사이드바 & 메인 콘텐츠 2열 그리드 레이아웃 */
+      .layout {
+        display: grid;
+        grid-template-columns: 320px 1fr;
+        gap: 24px;
+        align-items: start;
+      }
+
+      /* 카드형 섹션 공통 디자인 */
+      section {
+        background: white;
+        border: 1px solid #f1f5f9;
+        padding: 20px;
+        margin-bottom: 16px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+      }
+      section h3 {
+        font-size: 16px;
+        color: #1e293b;
+        margin-bottom: 12px;
+        border-left: 4px solid #4a90e2;
+        padding-left: 8px;
+        font-weight: 700;
+      }
+
+      /* 폼 요소 스타일링 */
+      .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      input[type="text"],
+      input[type="number"] {
+        width: 100%;
+        padding: 9px 12px;
+        border: 1px solid #cbd5e1;
+        border-radius: 6px;
+        font-size: 14px;
+        outline: none;
+        transition: border-color 0.2s ease;
+      }
+      input[type="text"]:focus,
+      input[type="number"]:focus {
+        border-color: #4a90e2;
+      }
+      button {
+        width: 100%;
+        padding: 9px 14px;
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.2s ease;
+      }
+      button:hover {
+        background-color: #357abd;
+      }
+
+      /* 오른쪽 메인 컨트롤 & 카드 스타일 */
+      #menuCount {
+        font-weight: 600;
+        color: #4a90e2;
+        margin-bottom: 12px;
+      }
+      .menuCard {
+        background: #f8fafc;
+        padding: 16px;
+        margin-bottom: 12px;
+        border-radius: 8px;
+        border: 1px solid #e2e8f0;
+      }
+      .menuCard h4 {
+        margin-bottom: 6px;
+        color: #1e293b;
+      }
+
+      /* 페이징 컨트롤 스타일 */
+      .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 12px;
+        margin-top: 20px;
+        padding-top: 12px;
+        border-top: 1px solid #f1f5f9;
+      }
+      .pagination button {
+        width: auto;
+        padding: 6px 16px;
+        background-color: #e2e8f0;
+        color: #334155;
+      }
+      .pagination button:hover {
+        background-color: #cbd5e1;
+      }
+      .pagination span {
+        font-size: 14px;
+        font-weight: 600;
+        color: #64748b;
+      }
+
+      /* 디스플레이 및 결과 영역 */
+      #display {
+        background: #eff6ff;
+        border: 1px solid #bfdbfe;
+        border-radius: 8px;
+        padding: 16px;
+        margin-top: 12px;
+      }
+      #displayMenu {
+        font-weight: 600;
+        color: #1e3a8a;
+      }
+      .result-box {
+        margin-top: 10px;
+      }
+
+      /* 반응형 대응 (모바일 시 1열 전환) */
+      @media (max-width: 868px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>점심 메뉴 서비스</h1>
+      <nav>
+        <a href="../index.html">홈</a>
+        <a href="./total_menu.html">음식검색 게시판</a>
+      </nav>
+    </header>
+
+    <div class="container">
+      <h2 class="page-title">점심 메뉴 정보 관리</h2>
+
+      <div class="layout">
+        <!-- 왼쪽 사이드바: 검색, 조회, 추가, 삭제 등 기능 배치 -->
+        <aside class="sidebar">
+          <section>
+            <h3>2. 메뉴 번호로 상세 정보 조회</h3>
+            <div class="form-group">
+              <input type="number" id="inputField" placeholder="메뉴 번호" />
+              <button id="choiceMenu">조회</button>
+            </div>
+          </section>
+
+          <section>
+            <h3>3. 메뉴명 검색</h3>
+            <div class="form-group">
+              <input type="text" id="searchField" placeholder="메뉴명 입력" />
+              <button id="searchBtn">검색</button>
+            </div>
+          </section>
+
+          <section>
+            <h3>4. 메뉴 추가</h3>
+            <div class="form-group">
+              <input type="text" id="addName" placeholder="메뉴명" />
+              <input type="number" id="addCalories" placeholder="칼로리" />
+              <input type="text" id="addDescription" placeholder="메뉴 소개" />
+              <button id="addBtn">추가</button>
+            </div>
+          </section>
+
+          <section>
+            <h3>5. 메뉴 삭제</h3>
+            <div class="form-group">
+              <input type="number" id="deleteField" placeholder="메뉴 번호" />
+              <button id="deleteBtn">삭제</button>
+            </div>
+          </section>
+
+          <section>
+            <h3>6. 칼로리로 검색</h3>
+            <div class="form-group">
+              <input
+                type="number"
+                id="calorieField"
+                placeholder="최대 칼로리"
+              />
+              <button id="calorieBtn">검색</button>
+            </div>
+          </section>
+
+          <section>
+            <h3>7. 오늘의 추천 메뉴</h3>
+            <button id="recommendBtn">메뉴 추천</button>
+          </section>
+        </aside>
+
+        <!-- 오른쪽 메인 영역: 전체 메뉴 목록(페이징) 및 기능별 출력 결과 -->
+        <main class="main-content">
+          <section>
+            <h3>📋 검색 및 조회 결과</h3>
+
+            <div id="display">
+              <div id="displayMenu">메뉴를 선택하거나 검색해 보세요.</div>
+            </div>
+
+            <div id="searchResult" class="result-box"></div>
+            <div id="calorieResult" class="result-box"></div>
+            <div id="recommendResult" class="result-box"></div>
+          </section>
+          <section>
+            <h3>1. 전체 메뉴</h3>
+            <p id="menuCount"></p>
+            <!-- 메뉴 개수 출력 -->
+            <div id="menuList"></div>
+            <!-- 한 페이지당 3개씩 디스플레이 -->
+
+            <!-- 3개씩 보기를 위한 페이징 컨트롤 -->
+            <div class="pagination">
+              <button id="prevBtn">&lt; 이전</button>
+              <span id="pageInfo">1 / 1</span>
+              <button id="nextBtn">다음 &gt;</button>
+            </div>
+          </section>
+
+          <!-- 조회 및 검색 결과 출력 전용 영역 -->
+        </main>
+      </div>
+    </div>
+
+    <!-- 모듈화 JS 연결 -->
+    <script type="module" src="../js/total_menu.js"></script>
+  </body>
+</html>
